@@ -1,18 +1,52 @@
-from django.shortcuts import render,HttpResponse
+# from django.shortcuts import render, redirect
+# from django.contrib.auth.hashers import make_password
+# from .models import User
 
+# def login(request):
+#     if request.method == 'POST':
+#         email = request.POST['email']
+#         password = request.POST['password']
 
-# Create your views here.
-def index(request):
-    context ={
-        "variable" : "This is sent"
-    }
-    # return HttpResponse("This is homepage")
-    return render(request, 'index.html',context)
-def service(request):
-    return HttpResponse("This is service")
-def contact(request):
-    return HttpResponse("This is contacts")
-def about(request):
-    return HttpResponse("This is  about")
+#         try:
+#             user = User.objects.get(email=email)
 
+#             if user.password == password:
+#                 # Login successful
+#                 return render(request, 'success.html', {'user': user})
+#             else:
+#                 # Invalid credentials
+#                 return render(request, 'login.html', {'error': 'Invalid credentials. Please try again.'})
+
+#         except User.DoesNotExist:
+#             # User not found
+#             return render(request, 'login.html', {'error': 'User not found.'})
+
+#     return render(request, 'login.html')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password
+from .models import User
+
+def login(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        try:
+            user = User.objects.get(email=email)
+
+            if user.password == password:
+                # Login successful
+                return render(request, 'success.html', {'user': user})
+            else:
+                # Invalid credentials
+                return render(request, 'login.html', {'error': 'Invalid credentials. Please try again.'})
+
+        except User.DoesNotExist:
+            # User not found, create a new user
+            new_user = User(email=email, password=password)
+            new_user.save()
+            return render(request, 'success.html', {'user': new_user})
+
+    return render(request, 'login.html')
 
